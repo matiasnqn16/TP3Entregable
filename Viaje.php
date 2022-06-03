@@ -55,5 +55,10 @@ class Viaje{
     }
 
 
+    public function importeViaje(){
+        return $this->getValorViaje();
+    }
+
+
 }
 ?>

@@ -88,31 +88,10 @@ private function cantAsientosDisp(){
 public function venderPasaje($pasajero){
     $retornar = null;
     $viaje = $this->getObjViaje();
-    $valorBase = $viaje->getValorViaje();
-    $valorNeto = $valorBase;
+    $valorNeto = 0;
     if($this->hayPasajeDisponible()){
-        /* Si el viaje es terrestre y el asiento es cama, se incrementa el importe un 25%. */
-        if(is_a($viaje,'Terrestre')){
-            if($viaje->getCatAsientos() == "cama"){
-                $valorNeto = $valorNeto + ($valorBase*0.25);
-            }
-        }
-        /* Si el viaje es aéreo y el asiento es primera clase sin escalas, se incrementa un 40%, */
-        if(is_a($viaje,'Aereo')){
-            if($viaje->getCatAsientos() == "Primera Clase"){
-                $valorNeto = $valorNeto + ($valorBase*0.4);
-                /* si el viaje además de ser un asiento de primera clase, el vuelo tiene escalas se incrementa el 
-                importe del viaje un 60%. */
-                if($viaje->getCantEscalas() > 0){
-                    $cantEscalas = $viaje->getCantEscalas();
-                    $valorNeto = $valorNeto + ( ($valorBase*0.6) * $cantEscalas );
-                }
-            }
-        }
-        /* Tanto para viajes terrestres o aéreos, si el viaje es ida y vuelta, se incrementa el importe del viaje un 50%. */
-        if($viaje->getTipoBoleto() == "Ida y Vuelta"){
-            $valorNeto = $valorNeto * 0.5;
-        }
+        $valorNeto = $viaje->importeViaje();
+    }
     $pasajero->setObjPasaje($viaje);
     $pasajero->setValorFinalViaje($valorNeto);
     if($this->getColVentasPasajeros() == null){
@@ -122,9 +101,7 @@ public function venderPasaje($pasajero){
         array_push($colPasajeros,$pasajero);
         $this->setColVentasPasajeros($colPasajeros);
     }
-
     $retornar = $valorNeto;
-    }
     return $retornar;
 }
 
